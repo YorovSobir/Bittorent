@@ -12,8 +12,8 @@ public class TorrentFile {
         bEncoder.write(this.filesInfo);
     }
 
-    public int getLength() {
-        return (int) filesInfo.get("length");
+    public long getLength() {
+        return (long) filesInfo.get("length");
     }
 
     public String getMD5Sum() {
