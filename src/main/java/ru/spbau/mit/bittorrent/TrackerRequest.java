@@ -14,9 +14,10 @@ public class TrackerRequest {
     private Request request;
     private String httpVersion;
 
-    public TrackerRequest(MetaInfo metaInfo) {
+    public TrackerRequest(MetaInfo metaInfo)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.metaInfo = metaInfo;
-        fields.put("infoHash", Hash.sha1(metaInfo.getInfo()));
+        fields.put("infoHash", Hash.sha1(metaInfo.getInfo().toString()));
     }
 
     public enum Event {

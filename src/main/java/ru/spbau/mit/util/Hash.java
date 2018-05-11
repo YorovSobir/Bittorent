@@ -28,4 +28,11 @@ public class Hash {
         md.update(text.getBytes("UTF-8"), 0, text.length());
         return convertToHex(md.digest());
     }
+
+    public static String md5(String text)
+            throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(text.getBytes("UTF-8"), 0, text.length());
+        return convertToHex(md.digest());
+    }
 }
