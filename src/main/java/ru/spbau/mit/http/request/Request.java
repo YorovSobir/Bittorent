@@ -7,13 +7,17 @@ public final class Request {
     private RequestLine requestLine;
     private List<Headers> headersList;
 
+    public Request(RequestLine requestLine) {
+        this.requestLine = requestLine;
+    }
+
     public static final class Method {
-        private static final String GET = "GET";
+        public static final String GET = "GET";
         // TODO add more methods if needed
     }
 
     public static final class RequestURI {
-        private enum TYPE {
+        public enum TYPE {
             ABSOLUTE_URI,
             ABS_PATH,
             AUTHORITY,
@@ -23,26 +27,27 @@ public final class Request {
         private TYPE type;
         private String uri;
 
-        public TYPE getType() {
-            return type;
-        }
-
-        public void setType(TYPE type) {
+        public RequestURI(TYPE type, String uri) {
             this.type = type;
-        }
-
-        public String getUri() {
-            return uri;
-        }
-
-        public void setUri(String uri) {
             this.uri = uri;
+        }
+
+        @Override
+        public String toString() {
+            return uri;
         }
     }
 
     public static final class RequestLine {
         private String method;
         private RequestURI requestURI;
+        private String httpVersion;
+
+        public RequestLine(String method, RequestURI requestURI, String httpVersion) {
+            this.method = method;
+            this.requestURI = requestURI;
+            this.httpVersion = httpVersion;
+        }
 
         public String getMethod() {
             return method;
@@ -68,7 +73,6 @@ public final class Request {
             this.httpVersion = httpVersion;
         }
 
-        private String httpVersion;
     }
 
     public static final class RequestHeader {
