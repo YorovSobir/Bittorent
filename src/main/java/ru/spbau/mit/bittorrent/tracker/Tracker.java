@@ -63,6 +63,9 @@ public class Tracker implements Runnable {
         private String response(String stringTrackerRequest) {
             TrackerRequest request = TrackerRequest.parse(stringTrackerRequest);
             TrackerResponse response = trackerResponseMap.get(request.getInfoHash());
+            if (response == null) {
+                response = TrackerResponse.EMPTY;
+            }
             Peer peer = new Peer(request.getPeerId(), request.getIp(), request.getPort());
             if (request.getEvent() == TrackerRequest.Event.STOPPED) {
                 response.remove(peer);

@@ -7,7 +7,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TrackerResponse {
-    private final Map<String, Object> torrentResponce = new HashMap<>();
+
+    public static final TrackerResponse EMPTY = new TrackerResponse(false);
+    static {
+        EMPTY.setComplete(0);
+        EMPTY.setIncomplete(0);
+    }
+    private final Map<String, Object> torrentResponse = new HashMap<>();
     private final Response response = new Response();
     private final BEncoder bEncoder = new BEncoder();
     private final Set<Peer> peers = new HashSet<>();
@@ -25,38 +31,38 @@ public final class TrackerResponse {
     public TrackerResponse(boolean mode) {
         this.mode = mode;
         if (!mode) {
-            torrentResponce.put("peers", peers);
+            torrentResponse.put("peers", peers);
         } else {
-            torrentResponce.put("peers", IPPort);
+            torrentResponse.put("peers", IPPort);
         }
     }
 
     public void setFailureReason(String failureReason) {
-        this.torrentResponce.put("failure reason", failureReason);
+        this.torrentResponse.put("failure reason", failureReason);
     }
 
     public void setWarningMessage(String warningMessage) {
-        this.torrentResponce.put("warning message", warningMessage);
+        this.torrentResponse.put("warning message", warningMessage);
     }
 
     public void setInterval(int interval) {
-        this.torrentResponce.put("interval", interval);
+        this.torrentResponse.put("interval", interval);
     }
 
     public void setMinInterval(int minInterval) {
-        this.torrentResponce.put("min interval", minInterval);
+        this.torrentResponse.put("min interval", minInterval);
     }
 
     public void setTrackerId(String trackerId) {
-        this.torrentResponce.put("tracker id", trackerId);
+        this.torrentResponse.put("tracker id", trackerId);
     }
 
     public void setComplete(int complete) {
-        this.torrentResponce.put("complete", complete);
+        this.torrentResponse.put("complete", complete);
     }
 
     public void setIncomplete(int incomplete) {
-        this.torrentResponce.put("incomplete", incomplete);
+        this.torrentResponse.put("incomplete", incomplete);
     }
 
     public void add(Peer peer) {
@@ -73,7 +79,7 @@ public final class TrackerResponse {
 
     @Override
     public String toString() {
-        bEncoder.write(torrentResponce);
+        bEncoder.write(torrentResponse);
         response.setVersion(1, 1);
         response.setContentType("text/plain");
         response.setCode(200);

@@ -159,6 +159,7 @@ public class TrackerRequest {
         return (String) fields.get("ip");
     }
 
+    // optional
     public void setNumwant(int numwant) {
         fields.put("numwant", numwant);
     }
