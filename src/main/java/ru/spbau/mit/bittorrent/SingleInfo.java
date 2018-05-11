@@ -12,8 +12,8 @@ public class SingleInfo implements Info {
     }
 
     @Override
-    public int getPieceLength() {
-        return (int) singleInfo.get("piece length");
+    public long getPieceLength() {
+        return (long) singleInfo.get("piece length");
     }
 
     @Override
@@ -25,8 +25,8 @@ public class SingleInfo implements Info {
         return (String) singleInfo.get("name");
     }
 
-    public int getLength() {
-        return (int) singleInfo.get("length");
+    public long getLength() {
+        return (long) singleInfo.get("length");
     }
 
     @Override

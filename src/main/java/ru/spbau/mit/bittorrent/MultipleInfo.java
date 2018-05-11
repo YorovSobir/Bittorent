@@ -14,8 +14,8 @@ public class MultipleInfo implements Info {
     }
 
     @Override
-    public int getPieceLength() {
-        return (int) multipleInfo.get("piece length");
+    public long getPieceLength() {
+        return (long) multipleInfo.get("piece length");
     }
 
     @Override

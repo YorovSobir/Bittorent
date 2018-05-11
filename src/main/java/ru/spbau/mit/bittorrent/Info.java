@@ -1,7 +1,7 @@
 package ru.spbau.mit.bittorrent;
 
 public interface Info {
-    int getPieceLength();
+    long getPieceLength();
 
     String getPieces();
 }

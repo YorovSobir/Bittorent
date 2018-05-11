@@ -40,10 +40,10 @@ public class MetaInfo {
         }
     }
 
-    private String fileSHA1(File file, int pieceSize) throws IOException, NoSuchAlgorithmException {
+    private String fileSHA1(File file, long pieceSize) throws IOException, NoSuchAlgorithmException {
         StringBuilder sha1 = new StringBuilder();
         try (RandomAccessFile data = new RandomAccessFile(file, "r")) {
-            byte[] buff = new byte[pieceSize];
+            byte[] buff = new byte[(int)pieceSize];
             for (long i = 0, len = data.length() / pieceSize; i < len; i++) {
                 data.read(buff);
                 sha1.append(Hash.sha1(buff.toString()), 0, 20);
@@ -67,7 +67,7 @@ public class MetaInfo {
                               String comment,
                               String author,
                               String encoding,
-                              int pieceSize) throws IOException, NoSuchAlgorithmException {
+                              long pieceSize) throws IOException, NoSuchAlgorithmException {
         metaInfo.put("announce", urlTracker);
         metaInfo.put("comment", comment);
         metaInfo.put("created by", author);
@@ -108,8 +108,8 @@ public class MetaInfo {
         }
         metaInfo.put("info", info);
         bEncoder.write(metaInfo);
-        try (PrintWriter out = new PrintWriter(output)) {
-            out.println(bEncoder.toString());
+        try (BufferedWriter out = new BufferedWriter(new FileWriter(output))) {
+            out.write(bEncoder.toString());
         }
         return true;
     }
