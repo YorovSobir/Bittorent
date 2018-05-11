@@ -83,6 +83,14 @@ public class TrackerRequest {
         this.httpVersion = httpVersion;
     }
 
+    public String getInfoHash() {
+        return (String) fields.get("infoHash");
+    }
+
+    public void setInfoHash(String info) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        fields.put("infoHash", Hash.sha1(info));
+    }
+
     public void setPeerId(String peerId) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         fields.put("peerId", Hash.sha1(peerId));
     }

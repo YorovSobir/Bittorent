@@ -2,10 +2,7 @@ package ru.spbau.mit.bittorrent;
 
 import ru.spbau.mit.http.response.Response;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +10,7 @@ public final class TrackerResponse {
     private final Map<String, Object> torrentResponce = new HashMap<>();
     private final Response response = new Response();
     private final BEncoder bEncoder = new BEncoder();
-    private final List<Map<String, Object>> peersDict = new ArrayList<>();
+    private final Set<Peer> peers = new HashSet<>();
     private boolean mode;
     private String IPPort = "";
 
@@ -28,7 +25,7 @@ public final class TrackerResponse {
     public TrackerResponse(boolean mode) {
         this.mode = mode;
         if (!mode) {
-            torrentResponce.put("peers", peersDict);
+            torrentResponce.put("peers", peers);
         } else {
             torrentResponce.put("peers", IPPort);
         }
@@ -62,15 +59,15 @@ public final class TrackerResponse {
         this.torrentResponce.put("incomplete", incomplete);
     }
 
-    public void push(String peerID, String ip, int port) {
-        Map<String, Object> tmp = new HashMap<>();
-        tmp.put("peer id", peerID);
-        tmp.put("ip", ip);
-        tmp.put("port", port);
-        peersDict.add(tmp);
+    public void add(Peer peer) {
+        peers.add(peer);
     }
 
-    public void push(String ip, int port) {
+    public boolean remove(Peer peer) {
+        return peers.remove(peer);
+    }
+
+    public void add(String ip, int port) {
         IPPort = ip.concat(String.valueOf(port));
     }
 
