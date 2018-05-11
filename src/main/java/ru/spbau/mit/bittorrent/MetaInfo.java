@@ -1,10 +1,9 @@
 package ru.spbau.mit.bittorrent;
 
+import ru.spbau.mit.util.Hash;
+
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class MetaInfo {
@@ -41,12 +40,34 @@ public class MetaInfo {
         }
     }
 
+    private String fileSHA1(File file, int pieceSize) throws IOException, NoSuchAlgorithmException {
+        StringBuilder sha1 = new StringBuilder();
+        try (RandomAccessFile data = new RandomAccessFile(file, "r")) {
+            byte[] buff = new byte[pieceSize];
+            for (long i = 0, len = data.length() / pieceSize; i < len; i++) {
+                data.read(buff);
+                sha1.append(Hash.sha1(buff.toString()), 0, 20);
+            }
+        }
+        return sha1.toString();
+    }
+
+    public MetaInfo() {
+
+    }
+
+    public MetaInfo(String path) throws IOException {
+        bEncoder.setInput(readFile(path));
+        metaInfo = (Map<String, Object>) bEncoder.read();
+    }
+
     public boolean CreateFile(String output,
-                           String path,
-                           String urlTracker,
-                           String comment,
-                           String author,
-                           String encoding) throws FileNotFoundException {
+                              String path,
+                              String urlTracker,
+                              String comment,
+                              String author,
+                              String encoding,
+                              int pieceSize) throws IOException, NoSuchAlgorithmException {
         metaInfo.put("announce", urlTracker);
         metaInfo.put("comment", comment);
         metaInfo.put("created by", author);
@@ -57,10 +78,12 @@ public class MetaInfo {
         if (!file.exists()) {
             return false;
         }
+        info.put("piece length", pieceSize);
         if (file.isFile()) {
             mode = false;
             info.put("name", file.getName());
             info.put("length", file.length());
+            info.put("pieces", fileSHA1(file, pieceSize));
         } else {
             mode = true;
             info.put("name", file.getName());
@@ -68,6 +91,7 @@ public class MetaInfo {
             ArrayList<File> files = new ArrayList<>();
             listf(path, files);
             String absPathDir = file.getAbsolutePath();
+            StringBuilder sha1 = new StringBuilder();
             for (File f : files) {
                 Map<String, Object> fileInfo = new HashMap<>();
                 fileInfo.put("length", f.length());
@@ -77,8 +101,10 @@ public class MetaInfo {
                 BEncoder bEnc = new BEncoder();
                 bEnc.writeAll((Object[]) pathToFile);
                 fileInfo.put("path", bEnc.toString());
+                sha1.append(fileSHA1(f, pieceSize));
                 ((ArrayList<Map<String, Object>>) info.get("files")).add(fileInfo);
             }
+            info.put("pieces", sha1.toString());
         }
         metaInfo.put("info", info);
         bEncoder.write(metaInfo);
@@ -86,11 +112,6 @@ public class MetaInfo {
             out.println(bEncoder.toString());
         }
         return true;
-    }
-
-    public void LoadFromFile(String path) throws IOException {
-        bEncoder.setInput(readFile(path));
-        metaInfo = (Map<String, Object>) bEncoder.read();
     }
 
     public String getAnnounce() {
