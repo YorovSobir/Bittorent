@@ -14,6 +14,10 @@ public class TrackerRequest {
     private Request request;
     private String httpVersion;
 
+    public TrackerRequest() {
+
+    }
+
     public TrackerRequest(MetaInfo metaInfo) {
         this.metaInfo = metaInfo;
         try {
@@ -33,8 +37,8 @@ public class TrackerRequest {
         Request request = Request.parse(stringTrackerRequest);
         Request.RequestURI requestURI = request.getRequestLine().getRequestURI();
         String uri = requestURI.getUri();
-        MetaInfo metaInfo = new MetaInfo();
-        TrackerRequest trackerRequest = new TrackerRequest(metaInfo);
+//        MetaInfo metaInfo = new MetaInfo();
+        TrackerRequest trackerRequest = new TrackerRequest();
         int index = uri.indexOf('?');
         if (index >= 0) {
             int end = index + 1;
@@ -51,7 +55,21 @@ public class TrackerRequest {
                 }
                 String value = uri.substring(begin, end);
                 ++end;
-                trackerRequest.fields.put(key, value);
+                if (key.equals("numwant") ||
+                        key.equals("left") ||
+                        key.equals("downloaded") ||
+                        key.equals("uploaded") ||
+                        key.equals("port")) {
+                    trackerRequest.fields.put(key, Integer.valueOf(value));
+                } else if (key.equals("event")) {
+                    switch (value) {
+                        case "started": trackerRequest.fields.put(key, Event.STARTED); break;
+                        case "stopped": trackerRequest.fields.put(key, Event.STOPPED); break;
+                        case "completed": trackerRequest.fields.put(key, Event.COMPLETED); break;
+                    }
+                } else {
+                    trackerRequest.fields.put(key, value);
+                }
             }
         }
         return trackerRequest;
@@ -164,11 +182,17 @@ public class TrackerRequest {
         fields.put("numwant", numwant);
     }
 
+    public int getNumwant() { return (int) fields.get("numwant"); }
+
     public void setKey(String key) {
         fields.put("key", key);
     }
 
+    public String getkey() { return (String) fields.get("key"); }
+
     public void setTrackerId(String trackerId) {
         fields.put("trackerId", trackerId);
     }
+
+    public String getTrackerId() { return (String) fields.get("trackerId"); }
 }

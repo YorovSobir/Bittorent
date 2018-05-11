@@ -22,7 +22,7 @@ public final class Request {
                 Character.compare(stringRequest.charAt(end), (char) Character.LINE_SEPARATOR) != 0) {
             ++end;
         }
-        ++end;
+//        ++end;
         return new Request(RequestLine.parse(stringRequest.substring(begin, end)));
     }
 
@@ -140,7 +140,7 @@ public final class Request {
                     !Character.isSpaceChar(stringRequestLine.charAt(end))) {
                 ++end;
             }
-            ++end;
+//            ++end;
 
             String htmlVersion = stringRequestLine.substring(begin, end);
             return new RequestLine(method, requestURI, htmlVersion);
