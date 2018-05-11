@@ -1,5 +1,6 @@
 package ru.spbau.mit.bittorrent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,11 @@ public class MultipleInfo implements Info {
     }
 
     public List<TorrentFile> getFiles() {
-        return (List<TorrentFile>) multipleInfo.get("files");
+        ArrayList<Map<String, Object>> out = (ArrayList<Map<String, Object>>) multipleInfo.get("files");
+        List<TorrentFile> result = new ArrayList<>();
+        for(Map<String, Object> i : out) {
+            result.add(new TorrentFile(i));
+        }
+        return result;
     }
 }

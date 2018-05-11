@@ -1,14 +1,16 @@
 package ru.spbau.mit.bittorrent;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class MetaInfo {
     private Map<String, Object> metaInfo = new HashMap<>();
     private final BEncoder bEncoder = new BEncoder();
+    private boolean mode;
 
     private String readFile(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -39,13 +41,12 @@ public class MetaInfo {
         }
     }
 
-    public boolean CreateFile(String outputDir,
-                           String outputName,
+    public boolean CreateFile(String output,
                            String path,
                            String urlTracker,
                            String comment,
                            String author,
-                           String encoding) {
+                           String encoding) throws FileNotFoundException {
         metaInfo.put("announce", urlTracker);
         metaInfo.put("comment", comment);
         metaInfo.put("created by", author);
@@ -57,9 +58,11 @@ public class MetaInfo {
             return false;
         }
         if (file.isFile()) {
+            mode = false;
             info.put("name", file.getName());
             info.put("length", file.length());
         } else {
+            mode = true;
             info.put("name", file.getName());
             info.put("files", new ArrayList<Map<String, Object>>());
             ArrayList<File> files = new ArrayList<>();
@@ -69,12 +72,19 @@ public class MetaInfo {
                 Map<String, Object> fileInfo = new HashMap<>();
                 fileInfo.put("length", f.length());
                 String[] pathToFile = f.getAbsolutePath()
-                        .substring(0, f.getAbsolutePath().indexOf(absPathDir))
+                        .substring(f.getAbsolutePath().indexOf(absPathDir) + 1)
                         .split("/");
-
+                BEncoder bEnc = new BEncoder();
+                bEnc.writeAll((Object[]) pathToFile);
+                fileInfo.put("path", bEnc.toString());
+                ((ArrayList<Map<String, Object>>) info.get("files")).add(fileInfo);
             }
         }
         metaInfo.put("info", info);
+        bEncoder.write(metaInfo);
+        try (PrintWriter out = new PrintWriter(output)) {
+            out.println(bEncoder.toString());
+        }
         return true;
     }
 
@@ -104,7 +114,10 @@ public class MetaInfo {
     }
 
     public Info getInfo() {
-        return (Info) metaInfo.get("info");
+        if (mode) {
+            return new MultipleInfo((Map<String, Object>) metaInfo.get("info"));
+        }
+        return new SingleInfo((Map<String, Object>) metaInfo.get("info"));
     }
 
 }
