@@ -4,6 +4,10 @@ import java.util.List;
 
 public final class Request {
 
+    public RequestLine getRequestLine() {
+        return requestLine;
+    }
+
     private RequestLine requestLine;
     private List<Headers> headersList;
 
@@ -11,9 +15,39 @@ public final class Request {
         this.requestLine = requestLine;
     }
 
+    public static Request parse(String stringRequest) {
+        int begin = 0;
+        int end = 0;
+        while (end < stringRequest.length() &&
+                Character.compare(stringRequest.charAt(end), (char) Character.LINE_SEPARATOR) != 0) {
+            ++end;
+        }
+        ++end;
+        return new Request(RequestLine.parse(stringRequest.substring(begin, end)));
+    }
+
     public static final class Method {
-        public static final String GET = "GET";
+        public static final Method GET = new Method("GET");
         // TODO add more methods if needed
+        private String method;
+
+        public Method(String method) {
+            this.method = method;
+        }
+
+        @Override
+        public String toString() {
+            return method;
+        }
+
+        public static Method parse(String methodString) {
+            switch (methodString.trim()) {
+                case "GET":
+                    return GET;
+                default:
+                    throw new IllegalStateException("undefined method");
+            }
+        }
     }
 
     public static final class RequestURI {
@@ -25,6 +59,11 @@ public final class Request {
         }
 
         private TYPE type;
+
+        public String getUri() {
+            return uri;
+        }
+
         private String uri;
 
         public RequestURI(TYPE type, String uri) {
@@ -36,24 +75,28 @@ public final class Request {
         public String toString() {
             return uri;
         }
+
+        public static RequestURI parse(String stringRequestURI) {
+            return new RequestURI(TYPE.ABSOLUTE_URI, stringRequestURI.trim());
+        }
     }
 
     public static final class RequestLine {
-        private String method;
+        private Method method;
         private RequestURI requestURI;
         private String httpVersion;
 
-        public RequestLine(String method, RequestURI requestURI, String httpVersion) {
+        public RequestLine(Method method, RequestURI requestURI, String httpVersion) {
             this.method = method;
             this.requestURI = requestURI;
             this.httpVersion = httpVersion;
         }
 
-        public String getMethod() {
+        public Method getMethod() {
             return method;
         }
 
-        public void setMethod(String method) {
+        public void setMethod(Method method) {
             this.method = method;
         }
 
@@ -71,6 +114,36 @@ public final class Request {
 
         public void setHttpVersion(String httpVersion) {
             this.httpVersion = httpVersion;
+        }
+
+        public static RequestLine parse(String stringRequestLine) {
+
+            int begin = 0;
+            int end = 0;
+            while (end < stringRequestLine.length() &&
+                    !Character.isWhitespace(stringRequestLine.charAt(end))) {
+                ++end;
+            }
+            ++end;
+            Method method = Method.parse(stringRequestLine.substring(begin, end));
+
+            begin = end;
+            while (end < stringRequestLine.length() &&
+                    !Character.isWhitespace(stringRequestLine.charAt(end))) {
+                ++end;
+            }
+            ++end;
+            RequestURI requestURI = RequestURI.parse(stringRequestLine.substring(begin, end));
+
+            begin = end;
+            while (end < stringRequestLine.length() &&
+                    !Character.isSpaceChar(stringRequestLine.charAt(end))) {
+                ++end;
+            }
+            ++end;
+
+            String htmlVersion = stringRequestLine.substring(begin, end);
+            return new RequestLine(method, requestURI, htmlVersion);
         }
 
     }
