@@ -1,0 +1,32 @@
+package ru.spbau.mit.bittorrent;
+
+import java.util.List;
+import java.util.Map;
+
+public class MultipleInfo implements Info {
+    private Map<String, Object> multipleInfo;
+    private final BEncoder bEncoder = new BEncoder();
+
+    public MultipleInfo(Map<String, Object> info) {
+        multipleInfo = info;
+        bEncoder.write(info);
+    }
+
+    @Override
+    public int getPieceLength() {
+        return (int) multipleInfo.get("piece length");
+    }
+
+    @Override
+    public String getPieces() {
+        return (String) multipleInfo.get("pieces");
+    }
+
+    public String getName() {
+        return (String) multipleInfo.get("name");
+    }
+
+    public List<TorrentFile> getFiles() {
+        return (List<TorrentFile>) multipleInfo.get("files");
+    }
+}

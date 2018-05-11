@@ -2,6 +2,7 @@ package ru.spbau.mit.bittorrent;
 
 import ru.spbau.mit.http.response.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TrackerResponse {
-    private Map<String, Object> torrentResponce;
-    private Response response;
-    private BEncoder bEncoder;
-    private List<Map<String, Object>> peersDict;
+    private final Map<String, Object> torrentResponce = new HashMap<>();
+    private final Response response = new Response();
+    private final BEncoder bEncoder = new BEncoder();
+    private final List<Map<String, Object>> peersDict = new ArrayList<>();
     private boolean mode;
-    private String IPPort;
+    private String IPPort = "";
 
     private final Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
     private Matcher matcher;
