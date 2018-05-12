@@ -1,5 +1,6 @@
-package ru.spbau.mit.bittorrent;
+package ru.spbau.mit.bittorrent.common;
 
+import ru.spbau.mit.bittorrent.metainfo.BEncoder;
 import ru.spbau.mit.http.response.Response;
 
 import java.util.*;
@@ -13,6 +14,7 @@ public final class TrackerResponse {
         EMPTY.setComplete(0);
         EMPTY.setIncomplete(0);
     }
+
     private final Map<String, Object> torrentResponse = new HashMap<>();
     private final Response response = new Response();
     private final BEncoder bEncoder = new BEncoder();
@@ -65,15 +67,15 @@ public final class TrackerResponse {
         this.torrentResponse.put("incomplete", incomplete);
     }
 
-    public void add(Peer peer) {
+    public void addPeer(Peer peer) {
         peers.add(peer);
     }
 
-    public boolean remove(Peer peer) {
+    public boolean removePeer(Peer peer) {
         return peers.remove(peer);
     }
 
-    public void add(String ip, int port) {
+    public void addPeer(String ip, int port) {
         IPPort = ip.concat(String.valueOf(port));
     }
 

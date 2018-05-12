@@ -1,18 +1,19 @@
 package ru.spbau.mit.bittorrent;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import ru.spbau.mit.bittorrent.metainfo.MetaInfo;
+import ru.spbau.mit.bittorrent.metainfo.MultipleInfo;
+import ru.spbau.mit.bittorrent.metainfo.SingleInfo;
+import ru.spbau.mit.bittorrent.metainfo.TorrentFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class MetaInfoTest {
     @Rule

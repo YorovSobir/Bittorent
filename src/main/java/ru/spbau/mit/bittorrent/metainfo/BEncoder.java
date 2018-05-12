@@ -1,4 +1,4 @@
-package ru.spbau.mit.bittorrent;
+package ru.spbau.mit.bittorrent.metainfo;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

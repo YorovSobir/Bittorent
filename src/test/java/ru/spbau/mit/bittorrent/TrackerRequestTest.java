@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import ru.spbau.mit.bittorrent.common.TrackerRequest;
+import ru.spbau.mit.bittorrent.metainfo.MetaInfo;
 import ru.spbau.mit.util.Hash;
 
 import java.io.File;
@@ -11,8 +13,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-
-import static org.junit.Assert.*;
 
 public class TrackerRequestTest {
     @Rule
