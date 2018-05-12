@@ -92,6 +92,7 @@ public class ClientImpl implements Client, Runnable {
                         trackerRequest.setHttpVersion("1.1");
                         trackerRequest.setKey("hello");
                         trackerRequest.setUploaded(status.getUpload());
+                        trackerRequest.setLeft(status.getLeft());
                         trackerRequest.setPort(port);
                         dataOutputStream.writeUTF(trackerRequest.toString());
                         String response = dataInputStream.readUTF();
