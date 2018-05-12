@@ -29,6 +29,7 @@ public class Tracker implements Runnable {
         try (ServerSocket server = new ServerSocket(port)) {
             while (true) {
                 executorService.submit(new ClientHandler(server.accept()));
+
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -50,6 +51,7 @@ public class Tracker implements Runnable {
                 while (true) {
                     String stringTrackerRequest = dataInputStream.readUTF();
                     String response = response(stringTrackerRequest);
+                    System.out.println("Write");
                     dataOutputStream.writeUTF(response);
                 }
             } catch (IOException e) {
