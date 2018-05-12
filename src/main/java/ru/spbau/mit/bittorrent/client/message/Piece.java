@@ -3,9 +3,9 @@ package ru.spbau.mit.bittorrent.client.message;
 public class Piece implements Message {
     private int index;
     private int begin;
-    private int block;
+    private byte[] block;
 
-    public Piece(int index, int begin, int block) {
+    public Piece(int index, int begin, byte[] block) {
         this.index = index;
         this.begin = begin;
         this.block = block;
@@ -14,12 +14,12 @@ public class Piece implements Message {
 
     @Override
     public int getMessageLength() {
-        return 0;
+        return 9 + block.length;
     }
 
     @Override
     public byte getMessageId() {
-        return 0;
+        return 7;
     }
 
     public int getIndex() {
@@ -30,7 +30,7 @@ public class Piece implements Message {
         return begin;
     }
 
-    public int getBlock() {
+    public byte[] getBlock() {
         return block;
     }
 }

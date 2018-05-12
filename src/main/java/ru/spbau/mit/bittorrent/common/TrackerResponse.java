@@ -71,11 +71,11 @@ public final class TrackerResponse {
         peers.add(peer);
     }
 
-    public boolean removePeer(Peer peer) {
+    public synchronized boolean removePeer(Peer peer) {
         return peers.remove(peer);
     }
 
-    public void addPeer(String ip, int port) {
+    public synchronized void addPeer(String ip, int port) {
         IPPort = ip.concat(String.valueOf(port));
     }
 
