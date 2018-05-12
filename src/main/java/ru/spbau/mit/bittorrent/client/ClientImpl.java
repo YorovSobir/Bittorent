@@ -6,7 +6,6 @@ import ru.spbau.mit.bittorrent.config.ClientConfig;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -29,7 +28,7 @@ public class ClientImpl implements Client, Runnable {
             try (ServerSocket server = new ServerSocket(port)) {
                 serverSocket = server;
                 while (true) {
-                    executorService.submit(new ClientHandler(serverSocket.accept()));
+                    executorService.submit(new ClientSeeder(serverSocket.accept()));
                 }
             } catch (SocketException e) {
                 // socket closed
@@ -40,10 +39,18 @@ public class ClientImpl implements Client, Runnable {
         executorService.submit(serverRun);
     }
 
-    private final class ClientHandler implements Runnable {
+    private final class ClientPeer implements Runnable {
+
+        @Override
+        public void run() {
+
+        }
+    }
+
+    private final class ClientSeeder implements Runnable {
         private Socket socket;
 
-        public ClientHandler(Socket socket) {
+        public ClientSeeder(Socket socket) {
             this.socket = socket;
         }
 
