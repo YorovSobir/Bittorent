@@ -3,10 +3,9 @@ package ru.spbau.mit.bittorrent.client.message;
 public class Request implements Message {
     private int index;
     private int begin;
+    private long length;
 
-    private int length;
-
-    public Request(int index, int begin, int length) {
+    public Request(int index, int begin, long length) {
         this.index = index;
         this.begin = begin;
         this.length = length;
@@ -22,7 +21,7 @@ public class Request implements Message {
         return 6;
     }
 
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 

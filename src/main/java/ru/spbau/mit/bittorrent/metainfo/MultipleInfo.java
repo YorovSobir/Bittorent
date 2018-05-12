@@ -40,4 +40,13 @@ public class MultipleInfo implements Info {
         }
         return result;
     }
+
+    @Override
+    public long getPieceCount() {
+        long result = 0;
+        for (TorrentFile torrentFile : getFiles()) {
+            result += torrentFile.getLength() / getPieceLength();
+        }
+        return result;
+    }
 }

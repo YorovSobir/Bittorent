@@ -34,8 +34,8 @@ public class SingleInfo implements Info {
         return (int) singleInfo.get("length");
     }
 
-//    @Override
-//    public String toString() {
-//        return bEncoder.toString();
-//    }
+    @Override
+    public long getPieceCount() {
+        return (getLength() / getPieceLength());
+    }
 }

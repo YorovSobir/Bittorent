@@ -105,6 +105,10 @@ public final class TrackerResponse {
         return (int) this.torrentResponse.get("incomplete");
     }
 
+    public Set<Peer> getPeers() {
+        return peers;
+    }
+
     public void addPeer(Peer peer) {
         peers.add(peer);
     }

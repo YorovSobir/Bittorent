@@ -6,4 +6,7 @@ public interface Info {
     String getPieces();
 
     String getString();
+
+    long getPieceCount();
+
 }

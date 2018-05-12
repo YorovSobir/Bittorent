@@ -150,8 +150,8 @@ public final class Request {
             }
 //            ++end;
 
-            String htmlVersion = stringRequestLine.substring(begin, end);
-            return new RequestLine(method, requestURI, htmlVersion);
+            String httpVersion = stringRequestLine.substring(begin, end);
+            return new RequestLine(method, requestURI, httpVersion);
         }
 
         public String getString() {
