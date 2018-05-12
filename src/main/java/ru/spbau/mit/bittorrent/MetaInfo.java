@@ -96,7 +96,7 @@ public class MetaInfo {
                 Map<String, Object> fileInfo = new HashMap<>();
                 fileInfo.put("length", f.length());
                 String[] pathToFile = f.getAbsolutePath()
-                        .substring(f.getAbsolutePath().indexOf(absPathDir) + 1)
+                        .substring(f.getAbsolutePath().indexOf(absPathDir) + absPathDir.length() + 1)
                         .split("/");
                 BEncoder bEnc = new BEncoder();
                 bEnc.writeAll((Object[]) pathToFile);
