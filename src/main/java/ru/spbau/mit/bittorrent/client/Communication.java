@@ -7,7 +7,6 @@ import ru.spbau.mit.bittorrent.common.Peer;
 import ru.spbau.mit.bittorrent.metainfo.MetaInfo;
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Communication {
     private String peerId;
@@ -62,8 +61,8 @@ public class Communication {
 
     private int getBit(int part) {
         byte[] temp = bitField.getBitField();
-        int bytePos = part % 8;
-        return (temp[bytePos] >> (8 - bytePos)) & 0x01;
+        int bytePos = part / 8;
+        return (temp[bytePos] >> (7 - part % 8)) & 0x01;
     }
 
 }

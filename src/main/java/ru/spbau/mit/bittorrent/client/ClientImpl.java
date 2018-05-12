@@ -221,7 +221,7 @@ public class ClientImpl implements Client, Runnable {
 
         private Message response(Request message) {
             State clientState = states.get(clientPeerId);
-            if (clientState.peerInterested && clientState.amChocking) {
+//            if (clientState.peerInterested && clientState.amChocking) {
                 try (RandomAccessFile randomAccessFile = new RandomAccessFile(getPath(infoHash), "r")) {
                     randomAccessFile.seek(message.getIndex() * ClientConfig.FILE_PART_SIZE + message.getBegin());
                     byte[] data = new byte[(int) message.getLength()];
@@ -232,8 +232,8 @@ public class ClientImpl implements Client, Runnable {
                 } catch (IOException e) {
                     throw new IllegalStateException("illegal part number", e);
                 }
-            }
-            return null;
+//            }
+//            return null;
         }
 
         private String getPath(String infoHash) {
@@ -279,7 +279,7 @@ public class ClientImpl implements Client, Runnable {
             return null;
         }
 
-        public byte[] getBitField() {
+        private byte[] getBitField() {
             byte[] bitField = new byte[(int) metaInfo.getInfo().getPieceCount() / 8];
             for (Integer part : infoHashToPiece.get(infoHash)) {
                 setBit(bitField, part);
