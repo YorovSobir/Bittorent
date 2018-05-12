@@ -1,6 +1,18 @@
 package ru.spbau.mit.bittorrent.common;
 
 public final class Peer {
+    public String getPeerId() {
+        return peerId;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
     private String peerId;
     private String ip;
     private int port;

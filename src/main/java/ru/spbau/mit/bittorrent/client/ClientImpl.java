@@ -2,6 +2,7 @@ package ru.spbau.mit.bittorrent.client;
 
 import ru.spbau.mit.bittorrent.client.api.Client;
 import ru.spbau.mit.bittorrent.client.message.Message;
+import ru.spbau.mit.bittorrent.common.Peer;
 import ru.spbau.mit.bittorrent.common.Status;
 import ru.spbau.mit.bittorrent.common.TrackerRequest;
 import ru.spbau.mit.bittorrent.common.TrackerResponse;
@@ -44,6 +45,8 @@ public class ClientImpl implements Client, Runnable {
     private Map<String, State> states = new ConcurrentHashMap<>();
     private Map<String, List<Integer>> peerToPieces = new ConcurrentHashMap<>();
     private Map<String, String> infoHashToFile = new ConcurrentHashMap<>();
+    private Map<String, MetaInfo> infoHashToMetaInfo = new ConcurrentHashMap<>();
+    private Map<String, List<Integer>> infoHashToPiece = new ConcurrentHashMap<>();
 
     public ClientImpl(int port, String peerId) {
         this.port = port;
@@ -120,6 +123,7 @@ public class ClientImpl implements Client, Runnable {
         private Socket socket;
         private String clientPeerId;
         private String infoHash;
+        private MetaInfo metaInfo;
 
         public ClientSeeder(Socket socket) {
             this.socket = socket;
@@ -136,9 +140,12 @@ public class ClientImpl implements Client, Runnable {
                 }
                 clientPeerId = initiatorHandshake.getPeerId();
                 infoHash = initiatorHandshake.getInfoHash();
+                metaInfo = infoHashToMetaInfo.get(infoHash);
                 states.put(clientPeerId, State.INITIAL);
                 Handshake handshake = new Handshake(infoHash, peerId);
                 out.writeObject(handshake);
+                BitField bitField = new BitField(getBitField());
+                out.writeObject(bitField);
                 while (true) {
                     Message message = (Message) in.readObject();
                     if (message instanceof KeepAlive) {
@@ -214,7 +221,7 @@ public class ClientImpl implements Client, Runnable {
             if (clientState.peerInterested && clientState.amChocking) {
                 try (RandomAccessFile randomAccessFile = new RandomAccessFile(getPath(infoHash), "r")) {
                     randomAccessFile.seek(message.getIndex() * ClientConfig.FILE_PART_SIZE + message.getBegin());
-                    byte[] data = new byte[message.getLength()];
+                    byte[] data = new byte[(int) message.getLength()];
                     randomAccessFile.read(data);
                     return new Piece(message.getIndex(), message.getBegin(), data);
                 } catch (FileNotFoundException e) {
@@ -268,6 +275,18 @@ public class ClientImpl implements Client, Runnable {
             state.peerChocking = true;
             return null;
         }
+
+        public byte[] getBitField() {
+            byte[] bitField = new byte[(int) metaInfo.getInfo().getPieceCount() / 8];
+            for (Integer part : infoHashToPiece.get(infoHash)) {
+                setBit(bitField, part);
+            }
+            return bitField;
+        }
+
+        private void setBit(byte[] bitField, int part) {
+            bitField[part % 8] |= (1 << (8 - (part % 8)));
+        }
     }
 
     @Override
@@ -282,7 +301,34 @@ public class ClientImpl implements Client, Runnable {
 
     @Override
     public void download(String pathToMetaFile) {
+        try {
+            TrackerResponse trackerResponse = requestTracker(pathToMetaFile);
+            Set<Peer> peers = trackerResponse.getPeers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private TrackerResponse requestTracker(String pathToMetaFile) throws IOException {
+        MetaInfo metaInfo = MetaInfo.parse(pathToMetaFile);
+        String[] server = metaInfo.getAnnounce().split(":");
+        try (Socket socket = new Socket(server[0], Integer.valueOf(server[1]));
+             DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream())) {
+
+            TrackerRequest trackerRequest = new TrackerRequest(metaInfo);
+            Status status = currentStatus.get(metaInfo);
+            trackerRequest.setEvent(status.getEvent());
+            trackerRequest.setHttpVersion("1.1");
+            trackerRequest.setKey("hello");
+            trackerRequest.setUploaded(status.getUpload());
+            trackerRequest.setPort(port);
+            dataOutputStream.writeUTF(trackerRequest.toString());
+            String response = dataInputStream.readUTF();
+            TrackerResponse trackerResponse = new TrackerResponse(response);
+            status.setResponse(trackerResponse);
+            return trackerResponse;
+        }
     }
 
     @Override
