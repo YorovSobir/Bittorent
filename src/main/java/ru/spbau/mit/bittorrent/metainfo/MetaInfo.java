@@ -52,7 +52,7 @@ public final class MetaInfo {
 
     }
 
-    public static MetaInfo parse(String pathToFile) throws IOException {
+    public static MetaInfo parse(String pathToFile) {
         MetaInfo metaInfo = new MetaInfo();
         metaInfo.bEncoder.setInput(readFile(pathToFile));
         metaInfo.fields = (Map<String, Object>) metaInfo.bEncoder.read();
