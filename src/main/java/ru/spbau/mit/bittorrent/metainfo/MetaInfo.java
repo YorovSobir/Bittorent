@@ -3,40 +3,36 @@ package ru.spbau.mit.bittorrent.metainfo;
 import ru.spbau.mit.util.Hash;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Stream;
 
 public final class MetaInfo {
-    private Map<String, Object> metaInfo = new HashMap<>();
+    private Map<String, Object> fields = new HashMap<>();
     private final BEncoder bEncoder = new BEncoder();
     private boolean mode;
 
-    private String readFile(String fileName) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        try {
+    private static String readFile(String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-            while (line != null) {
+            String line;
+            do {
+                line = br.readLine();
                 sb.append(line);
                 sb.append("\n");
-                line = br.readLine();
-            }
+            } while (line != null);
             return sb.toString();
-        } finally {
-            br.close();
+        } catch (IOException e) {
+            throw new IllegalStateException("cannot read file", e);
         }
     }
 
-    private void listf(String directoryName, ArrayList<File> files) {
-        File directory = new File(directoryName);
-        File[] fList = directory.listFiles();
-        for (File file : fList) {
-            if (file.isFile()) {
-                files.add(file);
-            } else if (file.isDirectory()) {
-                listf(file.getAbsolutePath(), files);
-            }
+    private void listf(String directoryName, ArrayList<File> files) throws IOException {
+        try (Stream<Path> paths = Files.walk(Paths.get(directoryName))) {
+            paths.filter(Files::isRegularFile).forEach(f -> files.add(f.toFile()));
         }
     }
 
@@ -56,9 +52,11 @@ public final class MetaInfo {
 
     }
 
-    public MetaInfo(String path) throws IOException {
-        bEncoder.setInput(readFile(path));
-        metaInfo = (Map<String, Object>) bEncoder.read();
+    public static MetaInfo parse(String pathToFile) throws IOException {
+        MetaInfo metaInfo = new MetaInfo();
+        metaInfo.bEncoder.setInput(readFile(pathToFile));
+        metaInfo.fields = (Map<String, Object>) metaInfo.bEncoder.read();
+        return metaInfo;
     }
 
     public boolean CreateFile(String output,
@@ -68,11 +66,11 @@ public final class MetaInfo {
                               String author,
                               String encoding,
                               long pieceSize) throws IOException, NoSuchAlgorithmException {
-        metaInfo.put("announce", urlTracker);
-        metaInfo.put("comment", comment);
-        metaInfo.put("created by", author);
-        metaInfo.put("encoding", encoding);
-        metaInfo.put("creation date", new Date().getTime());
+        fields.put("announce", urlTracker);
+        fields.put("comment", comment);
+        fields.put("created by", author);
+        fields.put("encoding", encoding);
+        fields.put("creation date", new Date().getTime());
         File file = new File(path);
         Map<String, Object> info = new HashMap<>();
         if (!file.exists()) {
@@ -106,8 +104,8 @@ public final class MetaInfo {
             }
             info.put("pieces", sha1.toString());
         }
-        metaInfo.put("info", info);
-        bEncoder.write(metaInfo);
+        fields.put("info", info);
+        bEncoder.write(fields);
         try (BufferedWriter out = new BufferedWriter(new FileWriter(output))) {
             out.write(bEncoder.toString());
         }
@@ -115,43 +113,43 @@ public final class MetaInfo {
     }
 
     public String getAnnounce() {
-        return (String) metaInfo.get("announce");
+        return (String) fields.get("announce");
     }
 
     public long getCreationData() {
-        return (long) metaInfo.get("creation date");
+        return (long) fields.get("creation date");
     }
 
     public String getComment() {
-        return (String) metaInfo.get("comment");
+        return (String) fields.get("comment");
     }
 
     public String getCreatedBy() {
-        return (String) metaInfo.get("created by");
+        return (String) fields.get("created by");
     }
 
     public String getEncoding() {
-        return (String) metaInfo.get("encoding");
+        return (String) fields.get("encoding");
     }
 
     public Info getInfo() {
         if (mode) {
-            return new MultipleInfo((Map<String, Object>) metaInfo.get("info"));
+            return new MultipleInfo((Map<String, Object>) fields.get("info"));
         }
-        return new SingleInfo((Map<String, Object>) metaInfo.get("info"));
+        return new SingleInfo((Map<String, Object>) fields.get("info"));
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof MetaInfo) {
             MetaInfo metaInfo = (MetaInfo) obj;
-            return metaInfo.metaInfo.equals(this.metaInfo);
+            return metaInfo.fields.equals(this.fields);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return this.metaInfo.hashCode();
+        return this.fields.hashCode();
     }
 }
