@@ -3,6 +3,7 @@ package ru.spbau.mit.bittorrent.tracker;
 import ru.spbau.mit.bittorrent.common.Peer;
 import ru.spbau.mit.bittorrent.common.TrackerRequest;
 import ru.spbau.mit.bittorrent.common.TrackerResponse;
+import ru.spbau.mit.bittorrent.config.TrackerConfig;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,9 +20,9 @@ public class Tracker implements Runnable {
     private ExecutorService executorService;
     private Map<String, TrackerResponse> trackerResponseMap = new HashMap<>();
 
-    public Tracker(int threadsCount, int port) {
+    public Tracker(int port) {
         this.port = port;
-        executorService = Executors.newFixedThreadPool(threadsCount);
+        executorService = Executors.newFixedThreadPool(TrackerConfig.THREADS_COUNT);
     }
 
     @Override

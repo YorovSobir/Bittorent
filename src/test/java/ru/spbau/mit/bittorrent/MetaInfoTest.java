@@ -90,7 +90,7 @@ public class MetaInfoTest {
                     "me",
                     "utf-8",
                     76800));
-            MetaInfo newMetaInfo = new MetaInfo(torrentFile.getAbsolutePath() + "/" + "new.torrent");
+            MetaInfo newMetaInfo = MetaInfo.parse(torrentFile.getAbsolutePath() + "/" + "new.torrent");
             Assert.assertEquals("localhost", newMetaInfo.getAnnounce());
             Assert.assertEquals("bla-bla", newMetaInfo.getComment());
             Assert.assertEquals("me", newMetaInfo.getCreatedBy());
