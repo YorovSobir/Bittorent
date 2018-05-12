@@ -65,12 +65,12 @@ public final class MetaInfo {
                               String comment,
                               String author,
                               String encoding,
-                              long pieceSize) throws IOException, NoSuchAlgorithmException {
+                              int pieceSize) throws IOException, NoSuchAlgorithmException {
         fields.put("announce", urlTracker);
         fields.put("comment", comment);
         fields.put("created by", author);
         fields.put("encoding", encoding);
-        fields.put("creation date", new Date().getTime());
+        fields.put("creation date", (int) new Date().getTime());
         File file = new File(path);
         Map<String, Object> info = new HashMap<>();
         if (!file.exists()) {
@@ -80,7 +80,7 @@ public final class MetaInfo {
         if (file.isFile()) {
             mode = false;
             info.put("name", file.getName());
-            info.put("length", file.length());
+            info.put("length", (int) file.length());
             info.put("pieces", fileSHA1(file, pieceSize));
         } else {
             mode = true;
@@ -98,7 +98,7 @@ public final class MetaInfo {
                         .split("/");
                 BEncoder bEnc = new BEncoder();
                 bEnc.writeAll((Object[]) pathToFile);
-                fileInfo.put("path", bEnc.toString());
+                fileInfo.put("path", bEnc.getString());
                 sha1.append(fileSHA1(f, pieceSize));
                 ((ArrayList<Map<String, Object>>) info.get("files")).add(fileInfo);
             }
@@ -107,7 +107,7 @@ public final class MetaInfo {
         fields.put("info", info);
         bEncoder.write(fields);
         try (BufferedWriter out = new BufferedWriter(new FileWriter(output))) {
-            out.write(bEncoder.toString());
+            out.write(bEncoder.getString());
         }
         return true;
     }
@@ -116,8 +116,8 @@ public final class MetaInfo {
         return (String) fields.get("announce");
     }
 
-    public long getCreationData() {
-        return (long) fields.get("creation date");
+    public int getCreationData() {
+        return (int) fields.get("creation date");
     }
 
     public String getComment() {

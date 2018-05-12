@@ -12,8 +12,8 @@ public class SingleInfo implements Info {
     }
 
     @Override
-    public long getPieceLength() {
-        return (long) singleInfo.get("piece length");
+    public int getPieceLength() {
+        return (int) singleInfo.get("piece length");
     }
 
     @Override
@@ -21,16 +21,21 @@ public class SingleInfo implements Info {
         return (String) singleInfo.get("pieces");
     }
 
+    @Override
+    public String getString() {
+        return bEncoder.toString();
+    }
+
     public String getName() {
         return (String) singleInfo.get("name");
     }
 
-    public long getLength() {
-        return (long) singleInfo.get("length");
+    public int getLength() {
+        return (int) singleInfo.get("length");
     }
 
-    @Override
-    public String toString() {
-        return bEncoder.toString();
-    }
+//    @Override
+//    public String toString() {
+//        return bEncoder.toString();
+//    }
 }

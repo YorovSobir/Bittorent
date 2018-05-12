@@ -59,7 +59,7 @@ public class TrackerRequestTest {
             trackerRequest.setUploaded(15);
             trackerRequest.setTrackerId("TID");
             trackerRequest.setPort(8080);
-            Assert.assertEquals("GET localhost?peerId=dde57e820d65c87a0777da46aba7cd35a0c8436a&trackerId=TID&left=100&port=8080&ip=localhost&uploaded=15&infoHash=ba91bdfc9cae521a59b3b7ca4a519a8069c456a5&numwant=5&event=completed&downloaded=10&key=key 1.1\n", trackerRequest.toString());
+            Assert.assertEquals("GET localhost?peerId=dde57e820d65c87a0777da46aba7cd35a0c8436a&trackerId=TID&left=100&port=8080&ip=localhost&uploaded=15&infoHash=ba91bdfc9cae521a59b3b7ca4a519a8069c456a5&numwant=5&event=completed&downloaded=10&key=key 1.1\n", trackerRequest.getString());
         }
 
     }

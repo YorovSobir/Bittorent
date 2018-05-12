@@ -20,8 +20,7 @@ public final class Peer {
     public boolean equals(Object other) {
         if (other instanceof Peer) {
             Peer otherPeer = (Peer) other;
-            return peerId.equals(otherPeer.peerId) && ip.equals(otherPeer.ip) &&
-                    port == otherPeer.port;
+            return peerId.equals(otherPeer.peerId) && ip.equals(otherPeer.ip) && port == otherPeer.port;
         }
         return false;
     }

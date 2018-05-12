@@ -86,7 +86,7 @@ public final class BEncoder {
         char type = in.charAt(id);
         ++id;
         if (type == 'i') {
-            long out = 0;
+            int out = 0;
             int start = id;
             int limit = id + 22;
             boolean neg = false;
@@ -135,8 +135,12 @@ public final class BEncoder {
         return null;
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         return sb.toString();
     }
+
+//    @Override
+//    public String toString() {
+//        return sb.toString();
+//    }
 }

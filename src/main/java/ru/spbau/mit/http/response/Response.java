@@ -69,16 +69,25 @@ public final class Response {
     public void setCode(int code) throws IllegalStateException {
         if (codeMessage.containsKey(code)) {
             this.code = code;
+            return;
         }
         throw new IllegalStateException("Wrong code: " + String.valueOf(code));
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         return "HTTP/" + String.valueOf(major) + "." + String.valueOf(minor) + " " + String.valueOf(code) + " " + codeMessage.get(code) + "\n"
                 + "Content-Length: " + String.valueOf(contentLength) + "\n"
                 + "Content-Type: " + contentType + "\n"
                 + "\n"
                 + data;
     }
+
+//    @Override
+//    public String toString() {
+//        return "HTTP/" + String.valueOf(major) + "." + String.valueOf(minor) + " " + String.valueOf(code) + " " + codeMessage.get(code) + "\n"
+//                + "Content-Length: " + String.valueOf(contentLength) + "\n"
+//                + "Content-Type: " + contentType + "\n"
+//                + "\n"
+//                + data;
+//    }
 }

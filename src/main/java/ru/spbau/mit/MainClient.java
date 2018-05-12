@@ -9,11 +9,11 @@ public class MainClient {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         ClientImpl client = new ClientImpl(1235, "hello");
 //        client.run();
-        client.createUpload("/home/sobir/spbau/secondyear/network/t.txt",
+        client.createUpload("/Users/vadim/testTorrent/SGD.pkl",
                 "127.0.0.1:1234",
                 "bla-bla",
                 "me",
                 "utf-8",
-                "/home/sobir/spbau/secondyear/network/t.mtorrent");
+                "/Users/vadim/testTorrent/t.mtorrent");
     }
 }

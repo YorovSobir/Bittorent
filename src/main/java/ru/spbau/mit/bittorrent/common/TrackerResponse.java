@@ -117,13 +117,22 @@ public final class TrackerResponse {
         IPPort = ip.concat(String.valueOf(port));
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         bEncoder.write(torrentResponse);
         response.setVersion(1, 1);
         response.setContentType("text/plain");
         response.setCode(200);
-        response.setData(bEncoder.toString());
-        return response.toString();
+        response.setData(bEncoder.getString());
+        return response.getString();
     }
+
+//    @Override
+//    public String toString() {
+//        bEncoder.write(torrentResponse);
+//        response.setVersion(1, 1);
+//        response.setContentType("text/plain");
+//        response.setCode(200);
+//        response.setData(bEncoder.toString());
+//        return response.toString();
+//    }
 }

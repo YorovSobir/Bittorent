@@ -35,10 +35,14 @@ public final class Request {
             this.method = method;
         }
 
-        @Override
-        public String toString() {
+        public String getString() {
             return method;
         }
+
+//        @Override
+//        public String toString() {
+//            return method;
+//        }
 
         public static Method parse(String methodString) {
             switch (methodString.trim()) {
@@ -71,10 +75,14 @@ public final class Request {
             this.uri = uri;
         }
 
-        @Override
-        public String toString() {
+        public String getString() {
             return uri;
         }
+
+//        @Override
+//        public String toString() {
+//            return uri;
+//        }
 
         public static RequestURI parse(String stringRequestURI) {
             return new RequestURI(TYPE.ABSOLUTE_URI, stringRequestURI.trim());
@@ -146,11 +154,16 @@ public final class Request {
             return new RequestLine(method, requestURI, htmlVersion);
         }
 
-        @Override
-        public String toString() {
-            return method.toString() + " " + requestURI.toString() + " "
+        public String getString() {
+            return method.getString() + " " + requestURI.getString() + " "
                     + httpVersion + System.lineSeparator();
         }
+
+//        @Override
+//        public String toString() {
+//            return method.toString() + " " + requestURI.toString() + " "
+//                    + httpVersion + System.lineSeparator();
+//        }
 
     }
 
@@ -176,8 +189,12 @@ public final class Request {
         //TODO addPeer fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
     }
 
-    @Override
-    public String toString() {
-        return requestLine.toString();
+    public String getString() {
+        return requestLine.getString();
     }
+
+//    @Override
+//    public String toString() {
+//        return requestLine.toString();
+//    }
 }

@@ -22,7 +22,7 @@ public class TrackerRequest {
     public TrackerRequest(MetaInfo metaInfo) {
         this.metaInfo = metaInfo;
         try {
-            fields.put("infoHash", Hash.sha1(metaInfo.getInfo().toString()));
+            fields.put("infoHash", Hash.sha1(metaInfo.getInfo().getString()));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
            throw new IllegalArgumentException(e);
         }
@@ -75,8 +75,7 @@ public class TrackerRequest {
         return trackerRequest;
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         if (request == null) {
             StringBuilder uriBuilder = new StringBuilder();
             uriBuilder.append(metaInfo.getAnnounce());
@@ -94,8 +93,30 @@ public class TrackerRequest {
             Request.RequestLine requestLine = new Request.RequestLine(Request.Method.GET, requestURI, httpVersion);
             request = new Request(requestLine);
         }
-        return request.toString();
+        return request.getString();
     }
+
+//    @Override
+//    public String toString() {
+//        if (request == null) {
+//            StringBuilder uriBuilder = new StringBuilder();
+//            uriBuilder.append(metaInfo.getAnnounce());
+//            uriBuilder.append("?");
+//            for (Map.Entry<String, Object> entry: fields.entrySet()) {
+//                uriBuilder.append(entry.getKey())
+//                        .append("=")
+//                        .append(entry.getValue())
+//                        .append("&");
+//            }
+//            uriBuilder.deleteCharAt(uriBuilder.length() - 1);
+//
+//            Request.RequestURI requestURI = new Request.RequestURI(Request.RequestURI.TYPE.ABSOLUTE_URI,
+//                    uriBuilder.toString());
+//            Request.RequestLine requestLine = new Request.RequestLine(Request.Method.GET, requestURI, httpVersion);
+//            request = new Request(requestLine);
+//        }
+//        return request.toString();
+//    }
 
     public void setHttpVersion(String httpVersion) {
         this.httpVersion = httpVersion;

@@ -30,7 +30,6 @@ public class Tracker implements Runnable {
         try (ServerSocket server = new ServerSocket(port)) {
             while (true) {
                 executorService.submit(new ClientHandler(server.accept()));
-
             }
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -51,7 +50,7 @@ public class Tracker implements Runnable {
                  DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream())) {
                 while (true) {
                     String stringTrackerRequest = dataInputStream.readUTF();
-                    String response = response(stringTrackerRequest);
+                    String response = response(stringTrackerRequest, socket.getInetAddress().getHostName());
                     System.out.println("Write");
                     dataOutputStream.writeUTF(response);
                 }
@@ -60,13 +59,13 @@ public class Tracker implements Runnable {
             }
         }
 
-        private String response(String stringTrackerRequest) {
+        private String response(String stringTrackerRequest, String ip) {
             TrackerRequest request = TrackerRequest.parse(stringTrackerRequest);
             TrackerResponse response = trackerResponseMap.get(request.getInfoHash());
             if (response == null) {
                 response = TrackerResponse.EMPTY;
             }
-            Peer peer = new Peer(request.getPeerId(), request.getIp(), request.getPort());
+            Peer peer = new Peer(request.getPeerId(), ip, request.getPort());
             if (request.getEvent() == TrackerRequest.Event.STOPPED) {
                 response.removePeer(peer);
             } else {
@@ -74,7 +73,8 @@ public class Tracker implements Runnable {
                     response.addPeer(peer);
                 }
             }
-            return response.toString();
+            response.setInterval(2);
+            return response.getString();
         }
     }
 }

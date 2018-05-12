@@ -14,13 +14,18 @@ public class MultipleInfo implements Info {
     }
 
     @Override
-    public long getPieceLength() {
-        return (long) multipleInfo.get("piece length");
+    public int getPieceLength() {
+        return (int) multipleInfo.get("piece length");
     }
 
     @Override
     public String getPieces() {
         return (String) multipleInfo.get("pieces");
+    }
+
+    @Override
+    public String getString() {
+        return bEncoder.toString();
     }
 
     public String getName() {

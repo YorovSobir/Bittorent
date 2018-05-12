@@ -33,8 +33,12 @@ public class Handshake {
         this(DEFAULT_PSTR, infoHash, peerId);
     }
 
-    @Override
-    public String toString() {
+    public String getString() {
         return String.valueOf(pstr.length()) + pstr + Arrays.toString(reserved) + infoHash + peerId;
     }
+
+//    @Override
+//    public String toString() {
+//        return String.valueOf(pstr.length()) + pstr + Arrays.toString(reserved) + infoHash + peerId;
+//    }
 }

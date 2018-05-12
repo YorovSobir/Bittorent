@@ -94,13 +94,15 @@ public class ClientImpl implements Client, Runnable {
                         trackerRequest.setUploaded(status.getUpload());
                         trackerRequest.setLeft(status.getLeft());
                         trackerRequest.setPort(port);
-                        dataOutputStream.writeUTF(trackerRequest.toString());
+                        trackerRequest.setPeerId("hello");
+                        System.out.println("Send");
+                        dataOutputStream.writeUTF(trackerRequest.getString());
                         String response = dataInputStream.readUTF();
                         TrackerResponse trackerResponse = new TrackerResponse(response);
                         status.setResponse(trackerResponse);
-                        sleep(trackerResponse.getInterval());
+                        sleep(trackerResponse.getInterval() * 1000);
                     }
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | NoSuchAlgorithmException e) {
                     e.printStackTrace();
                 }
             } catch (IOException e) {
