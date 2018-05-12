@@ -1,5 +1,6 @@
-package ru.spbau.mit.bittorrent;
+package ru.spbau.mit.bittorrent.common;
 
+import ru.spbau.mit.bittorrent.metainfo.MetaInfo;
 import ru.spbau.mit.http.request.Request;
 import ru.spbau.mit.util.Hash;
 
@@ -37,7 +38,6 @@ public class TrackerRequest {
         Request request = Request.parse(stringTrackerRequest);
         Request.RequestURI requestURI = request.getRequestLine().getRequestURI();
         String uri = requestURI.getUri();
-//        MetaInfo metaInfo = new MetaInfo();
         TrackerRequest trackerRequest = new TrackerRequest();
         int index = uri.indexOf('?');
         if (index >= 0) {

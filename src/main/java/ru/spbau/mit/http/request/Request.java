@@ -28,7 +28,7 @@ public final class Request {
 
     public static final class Method {
         public static final Method GET = new Method("GET");
-        // TODO add more methods if needed
+        // TODO addPeer more methods if needed
         private String method;
 
         public Method(String method) {
@@ -146,18 +146,24 @@ public final class Request {
             return new RequestLine(method, requestURI, htmlVersion);
         }
 
+        @Override
+        public String toString() {
+            return method.toString() + " " + requestURI.toString() + " "
+                    + httpVersion + System.lineSeparator();
+        }
+
     }
 
     public static final class RequestHeader {
-        //TODO add fields(if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5
+        //TODO addPeer fields(if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5
     }
 
     public static final class GeneralHeader {
-        //TODO add fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.5
+        //TODO addPeer fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.5
     }
 
     public static final class EntityHeader {
-        //TODO add fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html#sec7.1
+        //TODO addPeer fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html#sec7.1
     }
 
     public static final class Headers {
@@ -167,12 +173,11 @@ public final class Request {
     }
 
     public static final class MessageBody {
-        //TODO add fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
+        //TODO addPeer fields (if needed!) from https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
     }
 
     @Override
     public String toString() {
-        return requestLine.method + " " + requestLine.requestURI + " "
-                + requestLine.httpVersion + System.lineSeparator();
+        return requestLine.toString();
     }
 }

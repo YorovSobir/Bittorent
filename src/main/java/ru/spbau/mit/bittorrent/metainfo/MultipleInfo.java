@@ -1,4 +1,4 @@
-package ru.spbau.mit.bittorrent;
+package ru.spbau.mit.bittorrent.metainfo;
 
 import java.util.ArrayList;
 import java.util.List;

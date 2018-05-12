@@ -1,8 +1,8 @@
 package ru.spbau.mit.bittorrent.tracker;
 
-import ru.spbau.mit.bittorrent.Peer;
-import ru.spbau.mit.bittorrent.TrackerRequest;
-import ru.spbau.mit.bittorrent.TrackerResponse;
+import ru.spbau.mit.bittorrent.common.Peer;
+import ru.spbau.mit.bittorrent.common.TrackerRequest;
+import ru.spbau.mit.bittorrent.common.TrackerResponse;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -50,9 +50,6 @@ public class Tracker implements Runnable {
                 while (true) {
                     String stringTrackerRequest = dataInputStream.readUTF();
                     String response = response(stringTrackerRequest);
-                    if (response.isEmpty()) {
-                        break;
-                    }
                     dataOutputStream.writeUTF(response);
                 }
             } catch (IOException e) {
@@ -68,10 +65,10 @@ public class Tracker implements Runnable {
             }
             Peer peer = new Peer(request.getPeerId(), request.getIp(), request.getPort());
             if (request.getEvent() == TrackerRequest.Event.STOPPED) {
-                response.remove(peer);
+                response.removePeer(peer);
             } else {
                 if (request.getLeft() < 100) {
-                    response.add(peer);
+                    response.addPeer(peer);
                 }
             }
             return response.toString();
