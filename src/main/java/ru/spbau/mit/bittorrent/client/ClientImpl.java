@@ -280,4 +280,14 @@ public class ClientImpl implements Client, Runnable {
     public void stop() {
 
     }
+
+    @Override
+    public void download(String pathToMetaFile) {
+
+    }
+
+    @Override
+    public void upload(String pathToFile) {
+
+    }
 }
