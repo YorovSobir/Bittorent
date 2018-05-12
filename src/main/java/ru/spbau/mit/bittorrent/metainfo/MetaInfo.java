@@ -116,7 +116,7 @@ public final class MetaInfo {
         return (String) fields.get("announce");
     }
 
-    public int getCreationData() {
+    public int getCreationDate() {
         return (int) fields.get("creation date");
     }
 

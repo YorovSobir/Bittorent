@@ -10,6 +10,8 @@ import ru.spbau.mit.bittorrent.config.ClientConfig;
 import ru.spbau.mit.bittorrent.metainfo.MetaInfo;
 import ru.spbau.mit.bittorrent.client.message.*;
 import ru.spbau.mit.util.Hash;
+import ru.spbau.mit.util.TorrentManager;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -39,6 +41,7 @@ public class ClientImpl implements Client, Runnable {
         currentStatus.put(metaInfo, new Status(0, 0, 0, TrackerRequest.Event.COMPLETED));
         executorService.submit(new ClientRequest(metaInfo));
     }
+
     private String peerId;
     private ServerSocket serverSocket;
     private ExecutorService executorService = Executors.newFixedThreadPool(ClientConfig.THREADS_COUNT);
@@ -85,9 +88,9 @@ public class ClientImpl implements Client, Runnable {
         public void run() {
             try {
                 String[] server = metaInfo.getAnnounce().split(":");
-                Socket socket = new Socket(server[0], Integer.valueOf(server[1]));
                 TrackerRequest trackerRequest = new TrackerRequest(metaInfo);
-                try (DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+                try (Socket socket = new Socket(server[0], Integer.valueOf(server[1]));
+                     DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream())) {
                     while (true) {
                         Status status = currentStatus.get(metaInfo);
@@ -307,6 +310,13 @@ public class ClientImpl implements Client, Runnable {
         try {
             TrackerResponse trackerResponse = requestTracker(pathToMetaFile);
             Set<Peer> peers = trackerResponse.getPeers();
+            MetaInfo metaInfo = MetaInfo.parse(pathToMetaFile);
+            TorrentManager tm = new TorrentManager();
+            metaInfo.getInfo()
+            for (Peer p : peers) {
+                Communication c = new Communication(p.getPeerId(), p, metaInfo);
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

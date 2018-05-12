@@ -1,5 +1,7 @@
 package ru.spbau.mit.bittorrent.metainfo;
 
+import ru.spbau.mit.bittorrent.common.Peer;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,7 +37,17 @@ public final class BEncoder {
                 write(e.getValue());
             }
             sb.append('e');
-        } else if (o instanceof Iterable) {
+        } else if (o instanceof Peer) {
+            sb.append('d');
+            write("ip");
+            write(((Peer)o).getIp());
+            write("peerID");
+            write(((Peer)o).getPeerId());
+            write("port");
+            write(((Peer)o).getPort());
+            sb.append('e');
+        }
+        else if (o instanceof Iterable) {
             sb.append('l');
             writeAll((Iterable) o);
             sb.append('e');

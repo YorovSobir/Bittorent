@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public final class TrackerResponse {
 
-    public static final TrackerResponse EMPTY = new TrackerResponse(false);
+    public static final TrackerResponse EMPTY = new TrackerResponse();
     static {
         EMPTY.setComplete(0);
         EMPTY.setIncomplete(0);
@@ -19,8 +19,8 @@ public final class TrackerResponse {
     private final Response response = new Response();
     private final BEncoder bEncoder = new BEncoder();
     private final Set<Peer> peers = new HashSet<>();
-    private boolean mode;
-    private String IPPort = "";
+//    private boolean mode;
+//    private String IPPort = "";
 
     private final Pattern pattern = Pattern.compile(IPADDRESS_PATTERN);
     private Matcher matcher;
@@ -30,22 +30,17 @@ public final class TrackerResponse {
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
                     "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
-    public TrackerResponse(boolean mode) {
-        this.mode = mode;
-        if (!mode) {
-            torrentResponse.put("peers", peers);
-        } else {
-            torrentResponse.put("peers", IPPort);
-        }
+    public TrackerResponse() {
+        torrentResponse.put("peers", peers);
     }
 
     public TrackerResponse(String responce) {
         bEncoder.setInput(responce.split("\n\n")[1]);
         torrentResponse = (Map<String, Object>) bEncoder.read();
-        if (torrentResponse.get("peers") instanceof String) {
-            this.mode = false;
-        } else {
-            this.mode = true;
+        ArrayList<Map<String, Object>> tmp = (ArrayList<Map<String, Object>>) torrentResponse.get("peers");
+        for (Map<String, Object> i : tmp) {
+            Peer p = new Peer((String) i.get("peerID"), (String) i.get("ip"), (Integer) i.get("port"));
+            peers.add(p);
         }
     }
 
@@ -109,7 +104,7 @@ public final class TrackerResponse {
         return peers;
     }
 
-    public void addPeer(Peer peer) {
+    public synchronized void addPeer(Peer peer) {
         peers.add(peer);
     }
 
@@ -117,9 +112,9 @@ public final class TrackerResponse {
         return peers.remove(peer);
     }
 
-    public synchronized void addPeer(String ip, int port) {
-        IPPort = ip.concat(String.valueOf(port));
-    }
+//    public synchronized void addPeer(String ip, int port) {
+//        IPPort = ip.concat(String.valueOf(port));
+//    }
 
     public String getString() {
         bEncoder.write(torrentResponse);
