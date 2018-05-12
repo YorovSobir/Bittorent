@@ -6,7 +6,7 @@ import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class MetaInfo {
+public final class MetaInfo {
     private Map<String, Object> metaInfo = new HashMap<>();
     private final BEncoder bEncoder = new BEncoder();
     private boolean mode;
@@ -141,4 +141,17 @@ public class MetaInfo {
         return new SingleInfo((Map<String, Object>) metaInfo.get("info"));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MetaInfo) {
+            MetaInfo metaInfo = (MetaInfo) obj;
+            return metaInfo.metaInfo.equals(this.metaInfo);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.metaInfo.hashCode();
+    }
 }

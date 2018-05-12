@@ -15,7 +15,7 @@ public final class TrackerResponse {
         EMPTY.setIncomplete(0);
     }
 
-    private final Map<String, Object> torrentResponse = new HashMap<>();
+    private Map<String, Object> torrentResponse = new HashMap<>();
     private final Response response = new Response();
     private final BEncoder bEncoder = new BEncoder();
     private final Set<Peer> peers = new HashSet<>();
@@ -39,32 +39,70 @@ public final class TrackerResponse {
         }
     }
 
+    public TrackerResponse(String responce) {
+        bEncoder.setInput(responce.split("\n\n")[1]);
+        torrentResponse = (Map<String, Object>) bEncoder.read();
+        if (torrentResponse.get("peers") instanceof String) {
+            this.mode = false;
+        } else {
+            this.mode = true;
+        }
+    }
+
     public void setFailureReason(String failureReason) {
         this.torrentResponse.put("failure reason", failureReason);
+    }
+
+    public String getFailureReason() {
+        return (String) this.torrentResponse.get("failure reason");
     }
 
     public void setWarningMessage(String warningMessage) {
         this.torrentResponse.put("warning message", warningMessage);
     }
 
+    public String getWarningMessage() {
+        return (String) this.torrentResponse.get("warning message");
+    }
+
     public void setInterval(int interval) {
         this.torrentResponse.put("interval", interval);
+    }
+
+    public int getInterval() {
+        return (int) this.torrentResponse.get("interval");
     }
 
     public void setMinInterval(int minInterval) {
         this.torrentResponse.put("min interval", minInterval);
     }
 
+    public int getMinInterval() {
+        return (int) this.torrentResponse.get("min interval");
+    }
+
     public void setTrackerId(String trackerId) {
         this.torrentResponse.put("tracker id", trackerId);
+    }
+
+    public String getTrackerId() {
+        return (String) this.torrentResponse.get("tracker id");
     }
 
     public void setComplete(int complete) {
         this.torrentResponse.put("complete", complete);
     }
 
+    public int getComplete() {
+        return (int) this.torrentResponse.get("complete");
+    }
+
     public void setIncomplete(int incomplete) {
         this.torrentResponse.put("incomplete", incomplete);
+    }
+
+    public int getIncomplete() {
+        return (int) this.torrentResponse.get("incomplete");
     }
 
     public void addPeer(Peer peer) {
