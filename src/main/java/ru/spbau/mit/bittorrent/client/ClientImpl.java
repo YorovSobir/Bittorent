@@ -288,7 +288,7 @@ public class ClientImpl implements Client, Runnable {
         }
 
         private void setBit(byte[] bitField, int part) {
-            bitField[part % 8] |= (1 << (8 - (part % 8)));
+            bitField[part / 8] |= (1 << (7 - (part % 8)));
         }
     }
 
